@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>All Loans</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        table{
+          width:100%;
+          border-collapse:collapse;
+        }
+        th,td{
+          border:1px solid #ccc;
+          padding:10px;
+          text-align:left;
+        }
+        th{
+          background:#333;
+          color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>All Loan Applications</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Customer Name</th>
+            <th>Amount</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+
+        <tbody id="loanTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+    fetch("http://localhost:8080/api/loans/all")
+    .then(res => res.json())
+    .then(data => {
+      const table = document.getElementById("loanTable");
+
+      data.forEach(loan => {
+        const row = `
+          <tr>
+            <td>${loan.id}</td>
+            <td>${loan.fullName}</td>
+            <td>${loan.loanAmountRequested}</td>
+            <td>${loan.status}</td>
+          </tr>
+        `;
+        table.innerHTML += row;
+      });
+    })
+    .catch(err => console.log(err));
+</script>
+
+</body>
+</html>

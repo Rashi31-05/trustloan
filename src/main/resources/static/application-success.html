@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Application Submitted - TrustLoan</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .success-box {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .success-box h1 {
+            color: green;
+            font-size: 32px;
+        }
+
+        .success-box p {
+            margin-top: 15px;
+            font-size: 18px;
+            color: gray;
+        }
+
+        .back-btn {
+            margin-top: 25px;
+            background: #4b1f6f;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Trustloan</div>
+</header>
+
+<div class="container">
+    <div class="form-card success-box">
+        <h1>Application Submitted Successfully!</h1>
+        <p>Thank you for applying. Our team will review your application and contact you soon.</p>
+
+        <button class="back-btn" onclick="goHome()">Back to Home</button>
+    </div>
+</div>
+
+<script>
+    function goHome(){
+        window.location.href = "index.html";
+    }
+</script>
+
+</body>
+</html>

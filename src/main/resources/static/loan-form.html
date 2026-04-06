@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TrustLoan - Education Loan</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo-container">
+        <div class="logo-text">TrustLoan</div>
+    </div>
+
+    <div class="nav-links">
+        <a href="login.html" onclick="setRole('customer')">Customer</a>
+        <a href="login.html" onclick="setRole('admin')">Admin</a>
+    </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+
+    <h1>Education Loan Application Form</h1>
+    <p class="subtitle">Apply for Student Loan - Quick, Secure & Hassle-Free</p>
+
+    <form id="loanForm">
+
+        <!-- STEP 1 -->
+        <div class="form-card">
+            <div class="step-title">Step 1: Student Details</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mobile</label>
+                    <input type="text" name="mobile" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Aadhaar</label>
+                    <input type="text" name="aadhaar" required>
+                </div>
+
+                <div class="form-group">
+                    <label>PAN</label>
+                    <input type="text" name="pan" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-card">
+            <div class="step-title">Step 2: Education Details</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Course Name</label>
+                    <input type="text" name="courseName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Institution Name</label>
+                    <input type="text" name="institutionName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Admission Status</label>
+                    <select name="admissionStatus" required>
+                        <option value="">Select</option>
+                        <option>Confirmed</option>
+                        <option>Applied</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration (Years)</label>
+                    <input type="number" name="durationYears" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="form-card">
+            <div class="step-title">Step 3: Course & Cost</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Tuition Fee</label>
+                    <input type="number" id="tuitionFee" name="tuitionFee" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Course Cost</label>
+                    <input type="number" id="totalCourseCost" name="totalCourseCost" readonly>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Loan Amount Requested</label>
+                    <input type="number" name="loanAmountRequested" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="form-card">
+            <div class="step-title">Step 4: Co-Applicant</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="coApplicantName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Relationship</label>
+                    <select name="relationship" required>
+                        <option value="">Select</option>
+                        <option>Father</option>
+                        <option>Mother</option>
+                        <option>Guardian</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Monthly Income</label>
+                    <input type="number" name="monthlyCoApplicantIncome" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="form-card">
+            <div class="step-title">Step 5: Financial Details</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Annual Family Income</label>
+                    <input type="number" name="annualFamilyIncome" required>
+                </div>
+
+                <div class="form-group">
+                    <label>CIBIL Score</label>
+                    <input type="number" name="cibilScore" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="form-card">
+            <div class="step-title">Step 6: Bank Details</div>
+
+            <div class="grid">
+
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" name="bankAccount" required>
+                </div>
+
+                <div class="form-group">
+                    <label>IFSC Code</label>
+                    <input type="text" name="ifsc" required>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="form-card">
+            <div class="step-title">Step 7: Declaration</div>
+
+            <div class="form-group full-width">
+                <label style="justify-content: flex-start;">
+                    <input type="checkbox" name="acceptTerms" required>
+                    I accept terms and conditions
+                </label>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Signature</label>
+                <input type="text" name="signature" required>
+            </div>
+
+        </div>
+
+        <div class="submit-section">
+            <button type="submit" class="submit-btn">SUBMIT</button>
+        </div>
+
+    </form>
+
+    <p id="msg"></p>
+
+</div>
+
+<script>
+    // Auto calculate
+    document.getElementById("tuitionFee").addEventListener("input", function () {
+      document.getElementById("totalCourseCost").value = this.value;
+    });
+
+    document.getElementById("loanForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const loanData = {
+        fullName: document.querySelector("[name='fullName']").value,
+        dob: document.querySelector("[name='dob']").value,
+        gender: document.querySelector("[name='gender']").value,
+        mobile: document.querySelector("[name='mobile']").value,
+        email: document.querySelector("[name='email']").value,
+        aadhaar: document.querySelector("[name='aadhaar']").value,
+        pan: document.querySelector("[name='pan']").value,
+        courseName: document.querySelector("[name='courseName']").value,
+        institutionName: document.querySelector("[name='institutionName']").value,
+        admissionStatus: document.querySelector("[name='admissionStatus']").value,
+
+        durationYears: parseInt(document.querySelector("[name='durationYears']").value) || 0,
+        tuitionFee: parseFloat(document.querySelector("[name='tuitionFee']").value) || 0,
+        totalCourseCost: parseFloat(document.getElementById("totalCourseCost").value) || 0,
+        loanAmountRequested: parseFloat(document.querySelector("[name='loanAmountRequested']").value) || 0,
+
+        coApplicantName: document.querySelector("[name='coApplicantName']").value,
+        relationship: document.querySelector("[name='relationship']").value,
+        monthlyCoApplicantIncome: parseFloat(document.querySelector("[name='monthlyCoApplicantIncome']").value) || 0,
+
+        annualFamilyIncome: parseFloat(document.querySelector("[name='annualFamilyIncome']").value) || 0,
+        cibilScore: parseInt(document.querySelector("[name='cibilScore']").value) || 0,
+
+        bankAccount: document.querySelector("[name='bankAccount']").value,
+        ifsc: document.querySelector("[name='ifsc']").value,
+
+        acceptTerms: document.querySelector("[name='acceptTerms']").checked,
+        signature: document.querySelector("[name='signature']").value
+      };
+
+      if (!loanData.fullName || !loanData.email || !loanData.mobile) {
+        alert("Please fill required fields");
+        return;
+      }
+
+      fetch("http://localhost:8080/api/loans/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(loanData)
+      })
+      .then(async res => {
+        const text = await res.text();
+
+        if (!res.ok) {
+          console.error("Backend error:", text);
+          throw new Error(text);
+        }
+
+        return JSON.parse(text);
+      })
+      .then(data => {
+        console.log("Saved:", data);
+        window.location.href = "application-success.html";
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("msg").innerText = "Error saving data";
+      });
+    });
+</script>
+</body>
+</html>

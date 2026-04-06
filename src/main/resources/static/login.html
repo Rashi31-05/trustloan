@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - TrustLoan</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .toggle-link {
+            color: blue;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGIN FORM (UNCHANGED) -->
+    <div class="form-card" id="loginForm">
+        <h2 id="loginTitle">Login</h2>
+
+        <label>Email</label>
+        <input type="text" id="email">
+
+        <label>Password</label>
+        <input type="password" id="password">
+
+        <br><br>
+
+        <button class="submit-btn" onclick="loginUser()">Login</button>
+
+        <!-- ✅ ADD THIS -->
+        <p class="toggle-link" onclick="showSignup()">New customer? Sign up</p>
+    </div>
+
+    <!-- ✅ NEW SIGNUP FORM -->
+    <div class="form-card" id="signupForm" style="display:none;">
+        <h2>Customer Sign Up</h2>
+
+        <label>Full Name</label>
+        <input type="text" id="fullName">
+
+        <label>Email</label>
+        <input type="text" id="signupEmail">
+
+        <label>Password</label>
+        <input type="password" id="signupPassword">
+
+        <label>Mobile</label>
+        <input type="text" id="mobile">
+
+        <br><br>
+
+        <button class="submit-btn" onclick="signupUser()">Sign Up</button>
+
+        <p class="toggle-link" onclick="showLogin()">Already have an account? Login</p>
+    </div>
+
+</div>
+
+<script>
+    function loginUser() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, password})
+    })
+    .then(res => res.json())
+    .then(user => {
+        console.log("User received:", user);
+
+        localStorage.setItem("userRole", user.role);
+
+        if (user.role === "ADMIN") {
+            window.location.href = "admin-dashboard.html";
+        } else if (user.role === "CUSTOMER") {
+            if (user.customer) {
+                localStorage.setItem("customerId", user.customer.id);
+                localStorage.setItem("customer", JSON.stringify(user.customer));
+            }
+            window.location.href = "customer-dashboard.html";
+        } else {
+            alert("Unknown role.");
+        }
+    })
+    .catch(err => {
+        console.error("Login error:", err);
+        alert("Login failed: " + err.message);
+    });
+}
+
+    function showSignup() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("signupForm").style.display = "block";
+    }
+
+    function showLogin() {
+        document.getElementById("signupForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+    }
+
+    function signupUser() {
+        const fullName = document.getElementById("fullName").value;
+        const email = document.getElementById("signupEmail").value;
+        const password = document.getElementById("signupPassword").value;
+        const mobile = document.getElementById("mobile").value;
+
+        fetch("http://localhost:8080/api/customers/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({fullName, email, password, mobile})
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Signup successful! Please login.");
+            showLogin();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Signup failed");
+        });
+    }
+</script>
+
+</body>
+</html>

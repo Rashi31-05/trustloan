@@ -5,11 +5,15 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
+    @OneToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "full_name")
     private String fullName;
     private String email;
     private String password;
@@ -38,4 +42,8 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public Customer getCustomer() {return customer;}
+
+    public void setCustomer(Customer customer) {this.customer = customer;}
 }

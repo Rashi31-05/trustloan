@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - TrustLoan</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .dashboard{
+            width:90%;
+            margin:auto;
+            margin-top:40px;
+        }
+        h2{
+            color:#4b1f6f;
+            margin-bottom:20px;
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+        }
+        th, td{
+            padding:12px;
+            text-align:center;
+            border-bottom:1px solid #ddd;
+        }
+        th{
+            background:#4b1f6f;
+            color:white;
+        }
+        tr:hover{
+            background:#f5f5f5;
+        }
+        .btn{
+            padding:6px 12px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            margin: 2px;
+        }
+        .approve{ background:#27ae60; color:white; }
+        .reject{ background:#e74c3c; color:white; }
+        .low { color: green; font-weight: bold; }
+        .medium { color: orange; font-weight: bold; }
+        .high { color: red; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">TrustLoan</div>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+    </div>
+</header>
+
+<div class="dashboard">
+    <h2>Loan Applications Database</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Applicant Name</th>
+            <th>Mobile</th>
+            <th>Course</th>
+            <th>Institution</th>
+            <th>Loan Amount</th>
+            <th>Risk</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="applicationTable"></tbody>
+    </table>
+</div>
+
+<script>
+    fetch("http://localhost:8080/api/loans/all")
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("applicationTable");
+        table.innerHTML = "";
+
+        data.forEach(loan => {
+
+            const riskColor =
+                loan.riskCategory === 'LOW' || loan.riskCategory === 'LOW RISK' ? 'green' :
+                loan.riskCategory === 'MEDIUM' || loan.riskCategory === 'MEDIUM RISK' ? 'orange' : 'red';
+
+            // Always show both buttons, pass isOverride=true only if currently REJECTED
+            const actionButtons = `
+                <button class="btn approve" onclick="updateStatus(${loan.loanId}, 'APPROVED', ${loan.status === 'REJECTED'})">Approve</button>
+                <button class="btn reject" onclick="updateStatus(${loan.loanId}, 'REJECTED', false)">Reject</button>
+            `;
+
+            const row = `
+            <tr data-id="${loan.loanId}">
+                <td>${loan.loanId}</td>
+                <td>${loan.fullName}</td>
+                <td>${loan.mobile}</td>
+                <td>${loan.courseName}</td>
+                <td>${loan.institutionName}</td>
+                <td>&#8377;${loan.loanAmountRequested}</td>
+                <td style="color:${riskColor}; font-weight:bold;">${loan.riskCategory}</td>
+                <td class="status" style="color:${
+                    loan.status === 'APPROVED' ? 'green' :
+                    loan.status === 'REJECTED' ? 'red' : 'orange'
+                }; font-weight:bold;">
+                    ${loan.status}
+                </td>
+                <td class="action-cell">${actionButtons}</td>
+            </tr>
+            `;
+
+            table.innerHTML += row;
+        });
+    })
+    .catch(err => console.error("Fetch Error:", err));
+
+
+    function updateStatus(id, status, isOverride) {
+
+        if (isOverride) {
+            const confirmed = window.confirm(
+                "⚠️ WARNING: This loan was AUTO-REJECTED due to HIGH RISK.\n\nAre you sure you want to override and APPROVE it?"
+            );
+            if (!confirmed) return;
+        }
+
+        fetch(`http://localhost:8080/api/loans/update-status/${id}?status=${status}`, {
+            method: "PUT"
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Status updated successfully!");
+
+            const row = document.querySelector(`tr[data-id='${id}']`);
+            const statusCell = row.querySelector(".status");
+            const actionCell = row.querySelector(".action-cell");
+
+            // Update status cell color and text
+            statusCell.innerText = status;
+            statusCell.style.color = status === "APPROVED" ? "green" : "red";
+
+            // Update buttons — if now REJECTED, approve button needs isOverride=true
+            actionCell.innerHTML = `
+                <button class="btn approve" onclick="updateStatus(${id}, 'APPROVED', ${status === 'REJECTED'})">Approve</button>
+                <button class="btn reject" onclick="updateStatus(${id}, 'REJECTED', false)">Reject</button>
+            `;
+        })
+        .catch(err => console.error("Update Error:", err));
+    }
+</script>
+
+</body>
+</html>

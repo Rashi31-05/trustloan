@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Dashboard</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+        font-family: Arial;
+        background:#f4f4f4;
+    }
+    .review-container{
+        width:80%;
+        margin:auto;
+        padding:30px;
+    }
+    .section{
+        background:white;
+        padding:20px;
+        margin-bottom:25px;
+        border-radius:10px;
+        box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+    }
+    .section h3{
+        background:#f4c542;
+        display:inline-block;
+        padding:5px 15px;
+        border-radius:5px;
+    }
+    .grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:15px;
+        margin-top:15px;
+    }
+    input{
+        width:100%;
+        padding:8px;
+        border:1px solid #ccc;
+        border-radius:5px;
+        background:#f9f9f9;
+    }
+    .status-badge {
+        font-weight:bold;
+        padding:5px 10px;
+        border-radius:20px;
+        display:inline-block;
+    }
+    .timeline {
+        display:flex;
+        justify-content:space-between;
+        margin-top:20px;
+        text-align:center;
+    }
+    .timeline-step {
+        flex:1;
+        text-align:center;
+    }
+    .dot {
+        width:20px;
+        height:20px;
+        border-radius:50%;
+        margin:auto;
+    }
+    .timeline-label {
+        margin-top:6px;
+        font-size:13px;
+        font-weight:bold;
+    }
+    button {
+        margin-top:20px;
+        padding:10px 20px;
+        border:none;
+        border-radius:20px;
+        background:#4b1f6f;
+        color:white;
+        cursor:pointer;
+    }
+    button:hover {
+        opacity:0.9;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div class="review-container">
+  <h2>Your Loan Applications</h2>
+  <div id="loanContainer"></div>
+</div>
+
+<script>
+
+  const customer = JSON.parse(localStorage.getItem("customer"));
+
+  if (!customer) {
+      window.location.href = "login.html";
+  }
+
+  const customerId = customer.id;
+
+  fetch(`http://localhost:8080/api/loans/customer/${customerId}`)
+  .then(res => res.json())
+  .then(loans => {
+
+      window.loans = loans;
+
+      const container = document.getElementById("loanContainer");
+      container.innerHTML = "";
+
+      if (loans.length === 0) {
+          container.innerHTML = "<p>No loans found</p>";
+          return;
+      }
+
+      loans.forEach(loan => {
+
+          const statusColor =
+              loan.status === 'APPROVED' ? 'green' :
+              loan.status === 'REJECTED' ? 'red' : 'orange';
+
+          const card = `
+          <div class="section">
+
+              <h3>Applicant Details</h3>
+              <div class="grid">
+                  <div>
+                      <label>Full Name</label>
+                      <input value="${loan.fullName}" readonly>
+                  </div>
+                  <div>
+                      <label>Mobile</label>
+                      <input value="${loan.mobile}" readonly>
+                  </div>
+                  <div>
+                      <label>Email</label>
+                      <input value="${loan.email}" readonly>
+                  </div>
+                  <div>
+                      <label>Status</label><br>
+                      <span class="status-badge" style="color:white; background:${statusColor}">
+                          ${loan.status}
+                      </span>
+                  </div>
+              </div>
+
+              <h3>Education Details</h3>
+              <div class="grid">
+                  <div>
+                      <label>Course</label>
+                      <input value="${loan.courseName}" readonly>
+                  </div>
+                  <div>
+                      <label>Institution</label>
+                      <input value="${loan.institutionName}" readonly>
+                  </div>
+                  <div>
+                      <label>Admission Status</label>
+                      <input value="${loan.admissionStatus}" readonly>
+                  </div>
+              </div>
+
+              <h3>Loan Details</h3>
+              <div class="grid">
+                  <div>
+                      <label>Loan Amount</label>
+                      <input value="Rs. ${loan.loanAmountRequested}" readonly>
+                  </div>
+                  <div>
+                      <label>Risk Category</label>
+                      <input value="${loan.riskCategory}" readonly>
+                  </div>
+                  <div>
+                      <label>Applied On</label>
+                      <input value="${loan.applicationDate}" readonly>
+                  </div>
+              </div>
+
+              <div class="timeline">
+                  <div class="timeline-step">
+                      <div class="dot" style="background:green;"></div>
+                      <div class="timeline-label" style="color:green;">Applied</div>
+                  </div>
+                  <div class="timeline-step">
+                      <div class="dot" style="background:${loan.status === 'PENDING' ? 'orange' : statusColor};"></div>
+                      <div class="timeline-label" style="color:${loan.status === 'PENDING' ? 'orange' : statusColor};">Review</div>
+                  </div>
+                  <div class="timeline-step">
+                      <div class="dot" style="background:${statusColor};"></div>
+                      <div class="timeline-label" style="color:${statusColor};">${loan.status}</div>
+                  </div>
+              </div>
+
+              <button onclick="downloadPDF(${loan.loanId})">Download PDF</button>
+
+          </div>
+          `;
+
+          container.innerHTML += card;
+      });
+  })
+  .catch(err => console.error("Fetch error:", err));
+
+
+  async function downloadPDF(loanId) {
+
+      const loan = window.loans.find(l => l.loanId === loanId);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      // ── HEADER BANNER ──────────────────────────────────────
+      doc.setFillColor(75, 31, 111); // purple
+      doc.rect(0, 0, pageWidth, 30, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text("TrustLoan", 14, 13);
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Education Loan Application Summary", 14, 22);
+
+      doc.setFontSize(9);
+      doc.text("Date: " + new Date().toLocaleDateString(), pageWidth - 50, 13);
+      doc.text("Loan ID: #" + loan.loanId, pageWidth - 50, 22);
+
+      // ── STATUS BADGE ───────────────────────────────────────
+      const statusBgColor =
+          loan.status === 'APPROVED' ? [39, 174, 96] :
+          loan.status === 'REJECTED' ? [231, 76, 60] : [230, 126, 34];
+
+      doc.setFillColor(...statusBgColor);
+      doc.roundedRect(pageWidth - 55, 35, 45, 10, 3, 3, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text(loan.status, pageWidth - 32, 42, { align: "center" });
+
+      // ── SECTION HELPER ─────────────────────────────────────
+      function drawSection(title, startY) {
+          doc.setFillColor(244, 197, 66); // yellow
+          doc.rect(14, startY, pageWidth - 28, 8, 'F');
+          doc.setTextColor(50, 50, 50);
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "bold");
+          doc.text(title, 17, startY + 6);
+          return startY + 14;
+      }
+
+      // ── ROW HELPER ─────────────────────────────────────────
+      function drawRow(label, value, x, y) {
+          doc.setFontSize(9);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(100, 100, 100);
+          doc.text(label, x, y);
+
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(30, 30, 30);
+          doc.text(String(value), x, y + 6);
+
+          // underline
+          doc.setDrawColor(220, 220, 220);
+          doc.line(x, y + 7, x + 80, y + 7);
+      }
+
+      // ── APPLICANT DETAILS ──────────────────────────────────
+      let y = drawSection("Applicant Details", 50);
+
+      drawRow("Full Name", loan.fullName, 14, y);
+      drawRow("Email", loan.email, 110, y);
+      y += 18;
+      drawRow("Mobile", loan.mobile, 14, y);
+      drawRow("Date of Birth", loan.dob || "N/A", 110, y);
+      y += 18;
+      drawRow("Gender", loan.gender || "N/A", 14, y);
+      y += 18;
+
+      // ── EDUCATION DETAILS ──────────────────────────────────
+      y = drawSection("Education Details", y);
+
+      drawRow("Course", loan.courseName, 14, y);
+      drawRow("Institution", loan.institutionName, 110, y);
+      y += 18;
+      drawRow("Admission Status", loan.admissionStatus, 14, y);
+      drawRow("Duration", loan.durationYears + " Years", 110, y);
+      y += 18;
+
+      // ── LOAN DETAILS ───────────────────────────────────────
+      y = drawSection("Loan Details", y);
+
+      drawRow("Loan Amount", "Rs. " + loan.loanAmountRequested, 14, y);
+      drawRow("Tuition Fee", "Rs. " + loan.tuitionFee, 110, y);
+      y += 18;
+      drawRow("Risk Category", loan.riskCategory, 14, y);
+      drawRow("Applied On", loan.applicationDate, 110, y);
+      y += 18;
+
+      // ── CO-APPLICANT DETAILS ───────────────────────────────
+      y = drawSection("Co-Applicant Details", y);
+
+      drawRow("Co-Applicant Name", loan.coApplicantName, 14, y);
+      drawRow("Relationship", loan.relationship, 110, y);
+      y += 18;
+      drawRow("Monthly Income", "Rs. " + loan.monthlyCoApplicantIncome, 14, y);
+      drawRow("Annual Family Income", "Rs. " + loan.annualFamilyIncome, 110, y);
+      y += 18;
+
+      // ── FOOTER ─────────────────────────────────────────────
+      doc.setFillColor(75, 31, 111);
+      doc.rect(0, 275, pageWidth, 22, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.text("This is a system-generated document by TrustLoan. For queries contact support@trustloan.com", 14, 284);
+      doc.text("Signature: " + (loan.signature || "N/A"), 14, 291);
+
+      doc.save("TrustLoan_Application_" + loan.loanId + ".pdf");
+  }
+
+</script>
+
+</body>
+</html>
