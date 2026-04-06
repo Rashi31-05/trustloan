@@ -26,9 +26,6 @@ public class LoanService {
     }
 
     public Loan processLoan(Loan loan) {
-
-        // 🔐 Encrypt data (you already have this)
-
         int score = 0;
 
         // ✅ Rule 1: CIBIL Score
@@ -61,21 +58,6 @@ public class LoanService {
         }
 
         return loanRepository.save(loan);
-    }
-    private double calculateRisk(double income, double coIncome, int cibil, double loanAmount) {
-
-        double score = 0;
-
-        // Loan to income ratio
-        score += (loanAmount / income) * 40;
-
-        // Co-applicant strength
-        score += (20000 - coIncome) * 0.001;
-
-        // Credit score impact
-        score += (750 - cibil) * 0.2;
-
-        return Math.max(score, 0); // Ensure non-negative
     }
     public List<Loan> getLoansByCustomer(Long customerId) {
         return loanRepository.findByCustomer_Id(customerId);
