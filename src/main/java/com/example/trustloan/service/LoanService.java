@@ -56,7 +56,7 @@ public class LoanService {
             loan.setRiskCategory("HIGH");
             loan.setStatus("REJECTED"); // auto reject
         }
-
+        loan.setRiskScore(score);
         return loanRepository.save(loan);
     }
     public List<Loan> getLoansByCustomer(Long customerId) {
