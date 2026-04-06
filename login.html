@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - TrustLoan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <h2 id="loginTitle">Login</h2>
+
+        <label>Username</label>
+        <input type="text">
+
+        <label>Password</label>
+        <input type="password">
+
+        <br><br>
+        <button class="submit-btn" onclick="loginUser()">Login</button>
+    </div>
+</div>
+
+<script>
+function loginUser() {
+    const role = localStorage.getItem("userRole");
+
+    if(role === "admin"){
+        window.location.href = "admin-dashboard.html";
+    } else {
+        window.location.href = "customer-dashboard.html";
+    }
+}
+
+const role = localStorage.getItem("userRole");
+if(role === "admin"){
+    document.getElementById("loginTitle").innerText = "Admin Login";
+} else {
+    document.getElementById("loginTitle").innerText = "Customer Login";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Customer Application Review</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.review-container{
+width:80%;
+margin:auto;
+padding:30px;
+}
+
+.section{
+background:white;
+padding:20px;
+margin-bottom:25px;
+border-radius:10px;
+box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.section h3{
+background:#f4c542;
+display:inline-block;
+padding:5px 15px;
+border-radius:5px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:15px;
+}
+
+input{
+width:100%;
+padding:8px;
+border:1px solid #ccc;
+border-radius:5px;
+background:#f9f9f9;
+}
+
+.download-btn{
+margin-top:20px;
+padding:12px 30px;
+background:#4b1f6f;
+color:white;
+border:none;
+border-radius:25px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="logo">TrustLoan</div>
+
+    <div class="nav-links">
+        <a href="customer.html">Customer</a>
+        <a href="admin.html">Admin</a>
+    </div>
+</header>
+
+<div class="review-container">
+
+<h2>Your Submitted Loan Application</h2>
+
+<!-- Applicant Details -->
+
+<div class="section">
+<h3>Applicant Details</h3>
+
+<div class="grid">
+
+<div>
+<label>Full Name</label>
+<input id="fullName" readonly>
+</div>
+
+<div>
+<label>Mobile</label>
+<input id="mobile" readonly>
+</div>
+
+<div>
+<label>Age</label>
+<input id="age" readonly>
+</div>
+
+<div>
+<label>Email</label>
+<input id="email" readonly>
+</div>
+
+<div>
+<label>Address</label>
+<input id="address" readonly>
+</div>
+
+</div>
+</div>
+
+
+<!-- Education Details -->
+
+<div class="section">
+<h3>Education Details</h3>
+
+<div class="grid">
+
+<div>
+<label>Course</label>
+<input id="course" readonly>
+</div>
+
+<div>
+<label>Institution</label>
+<input id="institution" readonly>
+</div>
+
+<div>
+<label>Study Level</label>
+<input id="level" readonly>
+</div>
+
+<div>
+<label>Admission Status</label>
+<input id="admission" readonly>
+</div>
+
+</div>
+</div>
+
+
+<!-- Loan Details -->
+
+<div class="section">
+<h3>Loan Requirement</h3>
+
+<div class="grid">
+
+<div>
+<label>Loan Amount</label>
+<input id="loanAmount" readonly>
+</div>
+
+<div>
+<label>Loan Tenure</label>
+<input id="loanTenure" readonly>
+</div>
+
+<div>
+<label>Collateral</label>
+<input id="collateral" readonly>
+</div>
+
+</div>
+</div>
+
+<button class="download-btn" onclick="downloadPDF()">Download Application</button>
+
+</div>
+
+<script>
+
+const data = JSON.parse(localStorage.getItem("loanData"));
+
+if(data){
+
+document.getElementById("fullName").value=data.fullName;
+document.getElementById("mobile").value=data.mobile;
+document.getElementById("age").value=data.age;
+document.getElementById("email").value=data.email;
+document.getElementById("address").value=data.address;
+
+document.getElementById("course").value=data.course;
+document.getElementById("institution").value=data.institution;
+document.getElementById("level").value=data.studyLevel;
+document.getElementById("admission").value=data.admissionStatus;
+
+document.getElementById("loanAmount").value=data.loanAmount;
+document.getElementById("loanTenure").value=data.loanTenure;
+document.getElementById("collateral").value=data.collateral;
+
+}
+
+function downloadPDF(){
+
+window.print();
+
+}
+
+</script>
+
+</body>
+</html>
